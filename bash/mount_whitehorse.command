@@ -10,11 +10,7 @@ mkdir /Volumes/whitehorse
 mount -t smbfs //mak:ale2312x@makineisilon/whitehorse /Volumes/whitehorse
 echo mounting pegasus
 mkdir /Volumes/pegasus
-<<<<<<< HEAD
 mount -t smbfs //eduardo:"pgss%401046"@mak-nas/pegasus /Volumes/pegasus
-=======
-mount -t smbfs //jorge:Ladilla3@mak-nas/pegasus /Volumes/pegasus
->>>>>>> dee053f9f1adf232abbf990e89d87ba750dc970e
 echo done.
 sleep 1
 open -a trolCommander
@@ -28,11 +24,8 @@ echo '| $$      | $$  | $$| $$\  $$$| $$    $$| $$  | $$        | $$  | $$\  $$$
 echo '| $$      |  $$$$$$/| $$ \  $$|  $$$$$$/| $$  | $$       /$$$$$$| $$ \  $$';
 echo '|__/       \______/ |__/  \__/ \______/ |__/  |__/      |______/|__/  \__/';
 
-<<<<<<< HEAD
 log_punch.sh in
 
-=======
->>>>>>> dee053f9f1adf232abbf990e89d87ba750dc970e
 sleep 25
 
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" https://timeandlabor.paychex.com/secure/Login.aspx?Alias=0083A8306102 --args --"profile-direory"="Profile 2" > /tmp/chromelog.log &
