@@ -6,11 +6,11 @@ do
 	sleep 1
 done
 echo mounting whitehorse
-mkdir /Volumes/whitehorse
-mount -t smbfs //mak:ale2312x@makineisilon/whitehorse /Volumes/whitehorse
+mkdir /Volumes/whitehorses
+mount -t smbfs //mak:ale2312x@makineisilon/whitehorse /Volumes/whitehorses
 echo mounting pegasus
-mkdir /Volumes/pegasus
-mount -t smbfs //eduardo:"pgss%401046"@mak-nas/pegasus /Volumes/pegasus
+mkdir /Volumes/pegassus
+mount -t smbfs //eduardo:"pgss%401046"@mak-nas/pegasus /Volumes/pegassus
 echo done.
 sleep 1
 open -a trolCommander
