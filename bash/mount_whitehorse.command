@@ -10,7 +10,7 @@ mkdir /Volumes/whitehorse
 mount -t smbfs //mak:ale2312x@makineisilon/whitehorse /Volumes/whitehorse
 echo mounting pegasus
 mkdir /Volumes/pegasus
-mount -t smbfs //jorge:Ladilla3@mak-nas/pegasus /Volumes/pegasus
+mount -t smbfs //eduardo:"pgss%401046"@mak-nas/pegasus /Volumes/pegasus
 echo done.
 sleep 1
 open -a trolCommander
@@ -23,6 +23,8 @@ echo '| $$____/ | $$  | $$| $$  $$$$| $$      | $$__  $$        | $$  | $$  $$$$
 echo '| $$      | $$  | $$| $$\  $$$| $$    $$| $$  | $$        | $$  | $$\  $$$';
 echo '| $$      |  $$$$$$/| $$ \  $$|  $$$$$$/| $$  | $$       /$$$$$$| $$ \  $$';
 echo '|__/       \______/ |__/  \__/ \______/ |__/  |__/      |______/|__/  \__/';
+
+log_punch.sh in
 
 sleep 25
 
