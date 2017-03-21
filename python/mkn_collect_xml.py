@@ -41,11 +41,14 @@ def get_files( text_file ):
                 fileRef.set("fullpath",dest + os.path.basename(filepath))
             else:
                 fileRef.set("fullpath",dest + os.path.basename(filepath))
-        print( "asasas", Pin[0].attrib["bdata"] )
+        #print( "asasas", Pin[0].attrib["bdata"] )
             #fileRef.set("fullpath",dest + os.path.basename(filepath))
-            
-    xml_tree.write(os.path.dirname(name)+os.sep+os.path.basename(name).split(".")[0]+"_collected"+ os.path.extsep + os.path.basename(name).split(".")[1],encoding="utf-8")
-            
+    print('writing to', os.path.dirname(name)+os.sep+os.path.basename(name).split(".")[0]+"_collected"+ os.path.extsep + os.path.basename(name).split(".")[1])
+    print('alternatively write to', dest+'..'+os.sep+ os.path.basename(name))
+    
+    #xml_tree.write(os.path.dirname(name)+os.sep+os.path.basename(name).split(".")[0]+"_collected"+ os.path.extsep + os.path.basename(name).split(".")[1],encoding="utf-8")
+    xml_tree.write( dest+'..'+os.sep+ os.path.basename(name) ,encoding="utf-8")
+    
     #for item in root.iter("{http://www.adobe.com/products/aftereffects}fileReference"):
         
         #filepath = item.attrib["fullpath"]
@@ -106,3 +109,9 @@ def copy_files( files , dest ):
 #copy_files( get_seqs( name ), dest )
 #copy_files( get_files( name ), dest )
 get_files( name)
+
+for i in range(0,4):
+    print('\a')
+    
+print('DONE')
+
