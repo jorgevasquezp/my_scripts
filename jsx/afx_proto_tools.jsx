@@ -89,6 +89,14 @@ function suffix( items , suffix ){
     }
     return true;
 }
+function prefix( items , prefix ){
+    for ( i = 0 ; i < items.length ; i ++ )
+    {
+        var item = items[i];
+        item.name = suffix + "_" + item.name;
+    }
+    return true;
+}
 function replace( items , string , newString ){
     for ( i = 0 ; i < items.length ; i ++ )
     {
@@ -227,32 +235,44 @@ function getProjectCode(){
 }
 function setRendersToProjectPath(){
     var q = app.project.renderQueue;
+    //check the render queue item is not already rendered.
+    
     for ( var i = 1 ; i <= q.numItems ; i ++ ){
         item = q.item(i);
-        for ( var j = 1 ; j <= item.numOutputModules ; j ++ ){
-            o_module = item.outputModule(j);
-            var old_name = item.comp.name;
-            alert(old_name);
-            if ( o_module.file != null ){
-                
-                
-                var new_path = getOutputBasePath();
-                var new_folder = Folder( new_path );
-                var new_file = new File( new_path + "/" + old_name );
-                if ( !new_folder.exists ){
-                    alert(new_folder.create());
+        //3015 is QUEUED 
+        //3013 is NEEDS_OUTPUT
+        
+        if ( (item.status == 3015) || (item.status == 3013) ){
+            for ( var j = 1 ; j <= item.numOutputModules ; j ++ ){
+                o_module = item.outputModule(j);
+                var old_name = item.comp.name.replace(".","_");
+                //alert(old_name);
+                if ( o_module.file != null ){
+                    
+                    
+                    var new_path = getOutputBasePath();
+                    var new_folder = Folder( new_path );
+                    if ( !new_folder.exists ){
+                        new_folder.create();
+                    }
+                    alert(new_path + "/" + old_name)
+                    var new_file = new File( new_path + "/" + old_name );
+                    o_module.file = new_file ;
+                    //alert ( new_path );
+                    //o_module.file= new_file;
+                    //alert( o_module.file );
                 }
-                o_module.file = new_file ;
-                //alert ( new_path );
-                //o_module.file= new_file;
-                //alert( o_module.file );
             }
         }
     }
 }
 function getTodayTag(){
     var today = new Date();
-    var tag = String(today.getMonth()+1) + pad(today.getDate(),2) + String(today.getYear());
+    var month_component = pad(String(today.getMonth()+1),2);
+    var date_component = pad(today.getDate(),2);
+    var full_year_component = String(today.getFullYear())
+    var year_component = full_year_component.substr(full_year_component.length - 2,full_year_component.length );
+    var tag = month_component + date_component + year_component
     return tag;
 }
 function getOutputBasePath(){
@@ -260,6 +280,7 @@ function getOutputBasePath(){
     var file_path = String(app.project.file);
     var gfx_output_base = "05_Graphics_Output";
     var endtag_output_extra = "02_EndTags";
+    var scene_output_extra = "01_GFX_Scenes";
     var vfx_output_base = "03_Composite_Outputs";
     var vfx_output_base;
     var gfx_string = "09_Graphics";
@@ -276,7 +297,7 @@ function getOutputBasePath(){
         if ( search_endtag != -1 ){
             base_path += "/" + endtag_output_extra;
         }
-        base_path += "/" + getTodayTag();
+        base_path += "/" + scene_output_extra + "/" + getTodayTag();
     }
     
     if( search_vfx != -1 ){
@@ -285,14 +306,33 @@ function getOutputBasePath(){
     
     return base_path;
 }
-
+function incrementCompRevs( items ){
+    for ( i = 0 ; i < items.length ; i ++ )
+    {
+        var item = items[i];
+        
+        
+        alert(getCompRevision( items[i] ));
+    }
+    return true; 
+}
+function reRoute( items , search_str , replace_str ){
+    for ( var i = 0 ; i < items.length ; i ++ ){
+        var item = items[i];
+        var new_file = new File ( String(item.file.path).replace( search_str , replace_str ) );
+        alert ( item.replace(new_file) );
+        //writeLn( String(item.file.path).replace( search_str , replace_str ));
+        //writeLn( String(item.file.path));
+    }    
+}
+//reRoute( getSelectedProjectItems() , "MAkinE/Wells%20Fargo" , "Wells Fargo"  )
 //duplicateSuffix(getSelectedProjectItems (),"txtlss");
 //suffix(getSelectedProjectItems (),"5s");
-//replace(getSelectedProjectItems ()," 2","");
+//replace(getSelectedProjectItems (),"00","0");
 //duplicateReplace(getSelectedProjectItems (),"next\_", "");
 //enforceDuration(getSelectedProjectItems (),5);
 //checkDuration(getSelectedProjectItems (),5)
-//claritize(getSelectedProjectItems());
+claritize(getSelectedProjectItems());
 //fitToComp( app.project.activeItem.layer(1) );
 //pTools.debug.log( app.project.file.path );
 //makineizeProjectNames( getSelectedProjectItems() );
@@ -302,6 +342,8 @@ for ( var i = 0 ; i < p.length ; i ++ ){
  pTools.debug.log( getCompRevision( p[i] ) );
 }
 */
-setRendersToProjectPath()
+//setRendersToProjectPath()
 //alert( getTodayTag() );
 //getOutputBasePath();
+//incrementCompRevs( getSelectedProjectItems() );
+
