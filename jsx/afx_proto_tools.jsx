@@ -116,7 +116,7 @@ function enforceDuration( items , duration ){
     for ( i = 0 ; i < items.length ; i ++ )
     {
         var item = items[i];
-        item.duration = 5;
+        item.duration = duration;
     }
 }
 function fitToComp( layer ){
@@ -330,9 +330,9 @@ function reRoute( items , search_str , replace_str ){
 //suffix(getSelectedProjectItems (),"5s");
 //replace(getSelectedProjectItems (),"00","0");
 //duplicateReplace(getSelectedProjectItems (),"next\_", "");
-//enforceDuration(getSelectedProjectItems (),5);
+enforceDuration(getSelectedProjectItems (),9.23);
 //checkDuration(getSelectedProjectItems (),5)
-claritize(getSelectedProjectItems());
+//claritize(getSelectedProjectItems());
 //fitToComp( app.project.activeItem.layer(1) );
 //pTools.debug.log( app.project.file.path );
 //makineizeProjectNames( getSelectedProjectItems() );
