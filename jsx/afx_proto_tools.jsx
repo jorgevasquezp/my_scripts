@@ -155,6 +155,30 @@ function claritize( items ){
         //debug.log(item.duration);
     }
 }
+function claritizeSame( items ){
+    var orig_target_folder_name = "1920x1080@23.976";
+    var target_folder_name = "1920x1080@59.94";
+    var w = 1920;
+    var h = 1080;
+    var a = 1;
+    var r = 59.94;
+    target_folder = app.project.items.addFolder( target_folder_name );
+    orig_target_folder =  app.project.items.addFolder( orig_target_folder_name );
+
+    for ( i = 0 ; i < items.length ; i ++ )
+    {
+        var item = items[i];
+        var new_comp = app.project.items.addComp(item.name,w,h,1,item.duration,r);
+        new_comp.parentFolder = target_folder;
+        var new_layer = new_comp.layers.add(item);
+        //new_layer.startTime = 1;
+        
+        item.parentFolder = orig_target_folder;
+        fitToComp( new_layer );
+        
+        //debug.log(item.duration);
+    }
+}
 function makineizeProjectNames( items ){
     var pcode = getProjectCode();
     
@@ -330,9 +354,9 @@ function reRoute( items , search_str , replace_str ){
 //suffix(getSelectedProjectItems (),"5s");
 //replace(getSelectedProjectItems (),"00","0");
 //duplicateReplace(getSelectedProjectItems (),"next\_", "");
-enforceDuration(getSelectedProjectItems (),9.23);
+//enforceDuration(getSelectedProjectItems (),9.23);
 //checkDuration(getSelectedProjectItems (),5)
-//claritize(getSelectedProjectItems());
+claritizeSame(getSelectedProjectItems());
 //fitToComp( app.project.activeItem.layer(1) );
 //pTools.debug.log( app.project.file.path );
 //makineizeProjectNames( getSelectedProjectItems() );
