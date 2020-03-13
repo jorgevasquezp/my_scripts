@@ -349,14 +349,117 @@ function reRoute( items , search_str , replace_str ){
         //writeLn( String(item.file.path));
     }    
 }
+function renderMarkers(){
+	p = app.project;
+	rq = p.renderQueue;
+	rqi = rq.items;
+	comp = p.activeItem;
+	
+	var myRenderNull = comp.layer("Render");
+    if ( myRenderNull == null ){
+        myRenderNull = app.project.activeItem.layers.addNull();
+		myRenderNull.name = "Render";
+		myRenderNull.inPoint = -1;
+		myRenderNull.outPoint = -1;
+		alert('Created "Render Stills" layer.\nAdd markers to this layer and run again to render stills.');
+    }	
+	
+	markers= myRenderNull.property("Marker");
+	
+	for ( var j = 1 ; j <= markers.numKeys ; j ++ ){
+		i = rqi.add( comp );
+		var destPath = i.outputModule(1).file.path;
+		i.outputModule(1).applyTemplate("PNG+");
+		var markerName = markers.keyValue(j).comment;
+		i.timeSpanStart = markers.keyTime(j);
+		i.timeSpanDuration = comp.frameDuration;
+		
+		var destName = comp.name.replace(" ","_");
+		
+		var destFrame =  markers.keyTime(j) / comp.frameDuration;
+		if ( markerName == "" ){
+			i.outputModule(1).file = new File( destPath + "/" + destName + "_Still_f" + "[####]" )
+		}else{
+			i.outputModule(1).file = new File( destPath + "/" + destName + "_Still" + "_f[####]_" + markerName )
+		}
+		//alert( i.outputModule(1).file );
+		//i.outputModule(1).includeSourceXMP = true;
+	rq.render();	
+	}
+	//alert(i.timeSpanStart);
+	//alert(i.timeSpanDuration);
+	
+}
+function getSelectedProjectItems (){
+    var items = [];
+    var p = app.project;
+    for ( var i = 1 ; i <= p.numItems ; i ++ ){
+        var item = p.item(i);
+        if ( item.selected ){
+            items.push(item);
+        }
+    }
+    return items;
+}
+function getAllItems( folderItem ){
+	
+	var items = [];
+	var folders = [];
+	
+	for ( var i = 1 ; i <= folderItem.numItems ; i ++ ){
+	var item = folderItem.item(i);
+	
+	if ( (item.typeName != "Folder") ){
+			//if ( (isInArray( items ,item )) == false ){
+				items.push( item );
+			//}
+		}else{
+				var new_items = getItems(item);
+				for ( var j = 0 ; j < new_items.length ; j ++ ){
+					new_item = new_items[j];
+					//if ( (isInArray ( new_item )) == false ){
+						items.push ( new_item );
+					//}
+				}
+			}
+		}
+	return items
+}
+function flatten( items, root ){
+	app.beginUndoGroup("Flatten Folder Item");
+	for ( var i = 0; i < items.length ; i ++){
+		item = items[i];
+		item.parentFolder = root;
+	}
+	app.endUndoGroup();
+	purgeEmptyFolders();
+	return
+}
+function purgeEmptyFolders(){
+	app.beginUndoGroup("Purge Empty Folders")
+	var emptyFolders = [];
+	var p = app.project;
+	for ( var i = p.numItems ; i >= 1 ; i -- ){
+		item = p.item(i);
+		if ( item.typeName == "Folder" ){
+			if ( item.numItems <= 0 ){
+				item.remove();
+			}
+		}
+	}
+	return
+	app.endUndoGroup()
+}
+
+
 //reRoute( getSelectedProjectItems() , "MAkinE/Wells%20Fargo" , "Wells Fargo"  )
 //duplicateSuffix(getSelectedProjectItems (),"txtlss");
 //suffix(getSelectedProjectItems (),"5s");
 //replace(getSelectedProjectItems (),"00","0");
 //duplicateReplace(getSelectedProjectItems (),"next\_", "");
-//enforceDuration(getSelectedProjectItems (),9.23);
+//enforceDuration(getSelectedProjectItems (),5);
 //checkDuration(getSelectedProjectItems (),5)
-claritizeSame(getSelectedProjectItems());
+//claritizeSame(getSelectedProjectItems());
 //fitToComp( app.project.activeItem.layer(1) );
 //pTools.debug.log( app.project.file.path );
 //makineizeProjectNames( getSelectedProjectItems() );
@@ -370,4 +473,10 @@ for ( var i = 0 ; i < p.length ; i ++ ){
 //alert( getTodayTag() );
 //getOutputBasePath();
 //incrementCompRevs( getSelectedProjectItems() );
+
+renderMarkers()
+
+//alert(getSelectedProjectItems()[0].name)
+
+//flatten( getAllItems( getSelectedProjectItems()[0] ) , getSelectedProjectItems()[0] );
 
