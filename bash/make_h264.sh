@@ -1,10 +1,13 @@
-while getopts "s:b:" opt; do
+while getopts "s:b:r:" opt; do
   case ${opt} in
     s )
       height=$OPTARG
       ;;
     b )
       videorate=$OPTARG
+      ;;
+    r )
+      fps=$OPTARG
       ;;
     \? )
       echo "Invalid option: $OPTARG" 1>&2
@@ -28,18 +31,27 @@ else
 fi
 
 
+
+if [ -z "$fps" ]
+then
+     r=23.976M;
+else
+	r=$fps;
+fi
+
+
 if [ -z "$height" ]
 then
 	for i;
-		do ffmpeg -i "$i" -c:v libx264 -x264opts keyint=$g:scenecut=-1 -profile:v main -pix_fmt yuv420p -q 0 -strict -2 -vb $vb -y "${i%.*}_h264.mp4" ;
+		do ffmpeg -r $r -i "$i" -r $r -c:v libx264 -x264opts keyint=$g:scenecut=-1 -profile:v main -pix_fmt yuv420p -q 0 -strict -2 -vb $vb -y ${i%.*}_h264.mp4 ;
 	done;
 else
 	width=$(($height*16/9))
 	for i;
-		do ffmpeg -i "$i" -s $width'x'$height -c:v libx264 -x264opts keyint=$g:scenecut=-1 -profile:v main -pix_fmt yuv420p -q 0 -strict -2 -vb $vb -y "${i%.*}_"$width"x"$height"_h264.mp4" ;
+		do ffmpeg -r $r -i "$i" -s $width'x'$height -c:v libx264 -x264opts keyint=$g:scenecut=-1 -profile:v main -pix_fmt yuv420p -q 0 -strict -2 -vb $vb -y ${i%.*}_"$width"x"$height"_h264.mp4 ;
 	done;
-	
-fi
+fi	
+
 
 #/Volumes/pegasus/01_PROJECTS/18060_DSDC035_25_Days_Of_Christmas_2018/09_Graphics/05_Graphics_Output/01_GFX_Scenes/103018
 
