@@ -2,6 +2,7 @@ while getopts "s:b:r:" opt; do
   case ${opt} in
     s )
       size=$OPTARG
+      size=echo $size | sed 's/x/\:/'
       ;;
     b )
       vb=$OPTARG
@@ -35,18 +36,15 @@ if [ -z "$size" ]
 then
 	for i;		
 		do
-		ffmpeg -i "$i" -filter_complex "[0:v] palettegen" palette.png;
-		ffmpeg -r $r -i "$i" -i palette.png -filter_complex "[0:v][1:v] paletteuse" -r $r -pix_fmt rgb24 -q 0 -strict -2 -vb $vb -y ${i%.*}.gif ;
+		ffmpeg -i "$i"  -filter_complex "[0:v] fps=$fps [refpsd]; [refpsd] split [a][b];[a] palettegen [p];[b][p] paletteuse"  -q 0 -strict -2 -vb $vb -y ${i%.*}.gif ;
 	done;
 else
 	for i;
 		do
-		ffmpeg -i "$i" -filter_complex "[0:v] palettegen" palette.png
-		ffmpeg -r $r -i "$i" -i palette.png -filter_complex "[0:v][1:v] paletteuse" -s $size -pix_fmt rgb24 -q 0 -strict -2 -vb $vb -y ${i%.*}_$size.gif ;
+		ffmpeg -i "$i"  -filter_complex "[0:v] scale=$size,fps=$fps [scaled]; [scaled] split [i1][i2];[i1] palettegen [palette];[i2][palette] paletteuse" -q 0 -strict -2 -vb $vb -y ${i%.*}_$size.gif ;
 	done;
 fi	
 
-rm palette.png
 
 #/Volumes/pegasus/01_PROJECTS/18060_DSDC035_25_Days_Of_Christmas_2018/09_Graphics/05_Graphics_Output/01_GFX_Scenes/103018
 
