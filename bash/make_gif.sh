@@ -2,7 +2,7 @@ while getopts "s:b:r:" opt; do
   case ${opt} in
     s )
       size=$OPTARG
-      size=echo $size | sed 's/x/\:/'
+      sizealt=$(echo $size | sed 's/x/\:/')
       ;;
     b )
       vb=$OPTARG
@@ -22,6 +22,7 @@ done
 shift "$(($OPTIND -1))"
 
 g=6;
+color=999999;
 
 
 if [ -z "$fps" ]
@@ -36,12 +37,17 @@ if [ -z "$size" ]
 then
 	for i;		
 		do
-		ffmpeg -i "$i"  -filter_complex "[0:v] fps=$fps [refpsd]; [refpsd] split [a][b];[a] palettegen [p];[b][p] paletteuse"  -q 0 -strict -2 -vb $vb -y ${i%.*}.gif ;
+		d=$(ffprobe -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 "$i");
+		w=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of default=noprint_wrappers=1:nokey=1 "$i");
+		h=$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of default=noprint_wrappers=1:nokey=1 "$i");
+		ffmpeg -i "$i"  -filter_complex "[0:v] fps=$fps [refpsd]; gradients=size="$w"x"$h":d=$d:c0=$color:c1=$color [box];  [refpsd] split [a][b];[a] palettegen [p];[box][b] overlay [overlayed];[overlayed][p] paletteuse"  -q 0 -strict -2 -vb $vb -y ${i%.*}.gif ;
 	done;
 else
 	for i;
 		do
-		ffmpeg -i "$i"  -filter_complex "[0:v] scale=$size,fps=$fps [scaled]; [scaled] split [i1][i2];[i1] palettegen [palette];[i2][palette] paletteuse" -q 0 -strict -2 -vb $vb -y ${i%.*}_$size.gif ;
+		echo $size 
+		d=$(ffprobe -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 "$i");
+		ffmpeg -i "$i"  -filter_complex "[0:v] scale=$sizealt,fps=$fps [scaled]; gradients=size=$size:d=$d:c0=$color:c1=$color [box],[box][scaled] overlay [overlayed],[overlayed] split [i1][i2];[i1] palettegen [palette];[i2][palette] paletteuse" -q 0 -strict -2 -vb $vb -y ${i%.*}_$size.gif ;
 	done;
 fi	
 
